@@ -66,123 +66,41 @@
     .qris-note { margin-top: 12px; font-size: 12px; color: #888; text-align: center; }
     .qris-note strong { color: #6366f1; }
 
-    .form-block { padding: 24px 28px 28px; }
-    .form-block h2 { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 20px; }
+    .cta-block { padding: 24px 28px 32px; }
 
-    .form-group { margin-bottom: 16px; }
-    label { display: block; font-size: 12px; font-weight: 700; color: #555; margin-bottom: 6px; letter-spacing: 0.3px; }
-    .required { color: #ef4444; margin-left: 2px; }
-
-    input[type=text], input[type=email], input[type=tel], select {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1.5px solid #e2e8f0;
+    .cta-hint {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
       border-radius: 10px;
-      font-size: 14px;
-      color: #1a1a2e;
-      background: #fafafa;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      font-family: inherit;
-    }
-    input:focus, select:focus {
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
-      background: white;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #0369a1;
+      margin-bottom: 20px;
+      line-height: 1.6;
     }
 
-    .file-upload-wrap {
-      border: 2px dashed #c7d2fe;
-      border-radius: 10px;
-      padding: 20px;
-      text-align: center;
-      background: #f5f3ff;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-      position: relative;
-    }
-    .file-upload-wrap:hover { border-color: #667eea; background: #eef2ff; }
-    .file-upload-wrap input[type=file] {
-      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
-    }
-    .upload-icon { font-size: 28px; margin-bottom: 6px; }
-    .upload-text { font-size: 13px; color: #6366f1; font-weight: 600; }
-    .upload-sub  { font-size: 11px; color: #999; margin-top: 2px; }
-
-    .file-preview {
-      display: none;
+    .btn-gform {
+      display: flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 10px 12px;
-      margin-top: 10px;
-    }
-    .file-preview.show { display: flex; }
-    .file-preview img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0; }
-    .file-preview-name { font-size: 12px; color: #555; flex: 1; word-break: break-all; }
-    .file-remove { background: #fee2e2; color: #ef4444; border: none; border-radius: 6px; padding: 4px 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
-
-    .btn-submit {
       width: 100%;
-      padding: 14px;
+      padding: 16px 20px;
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       border: none;
       border-radius: 12px;
       font-size: 15px;
       font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: opacity 0.2s, transform 0.15s;
-      margin-top: 22px;
-      box-shadow: 0 6px 20px rgba(102,126,234,0.4);
-    }
-    .btn-submit:hover { opacity: 0.92; transform: translateY(-1px); }
-    .btn-submit:active { transform: translateY(0); }
-
-    /* Thank you screen */
-    .thankyou {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 56px 32px;
+      text-decoration: none;
       text-align: center;
+      box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+      transition: opacity 0.2s, transform 0.15s;
+      cursor: pointer;
+      line-height: 1.4;
     }
-    .thankyou.show { display: flex; }
-    .checkmark-circle {
-      width: 90px; height: 90px;
-      background: linear-gradient(135deg, #10b981, #059669);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 42px;
-      margin-bottom: 24px;
-      box-shadow: 0 8px 32px rgba(16,185,129,0.35);
-      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .thankyou h2 { font-size: 24px; font-weight: 800; color: #1a1a2e; margin-bottom: 10px; }
-    .thankyou p  { color: #666; font-size: 14px; line-height: 1.7; max-width: 320px; }
-    .thankyou .highlight {
-      display: inline-block;
-      background: #f0fdf4; color: #15803d;
-      border: 1px solid #bbf7d0;
-      border-radius: 8px; padding: 8px 16px;
-      font-size: 13px; font-weight: 600; margin-top: 16px;
-    }
-    .btn-back {
-      margin-top: 28px; padding: 11px 28px;
-      background: #f1f5f9; color: #475569;
-      border: 1.5px solid #e2e8f0; border-radius: 10px;
-      font-size: 14px; font-weight: 700; cursor: pointer;
-      font-family: inherit; transition: background 0.2s;
-    }
-    .btn-back:hover { background: #e2e8f0; }
+    .btn-gform:hover  { opacity: 0.92; transform: translateY(-1px); }
+    .btn-gform:active { transform: translateY(0); }
   </style>
 </head>
 <body>
@@ -194,7 +112,6 @@
     <p>Scan QRIS lalu isi form konfirmasi di bawah</p>
   </div>
 
-  <!-- Form view -->
   <div id="formView">
 
     <div class="qris-block">
@@ -205,146 +122,23 @@
       <p class="qris-note">Berlaku semua e-wallet &amp; mobile banking.<br><strong>Simpan bukti transfer</strong> untuk diunggah di bawah.</p>
     </div>
 
-    <div class="form-block">
-      <h2>📋 Konfirmasi Pembayaran</h2>
-
-      <!-- Form POST biasa ke formsubmit — paling reliable untuk file upload -->
-      <form
-        id="payForm"
-        action="https://formsubmit.co/solihunas@gmail.com"
-        method="POST"
-        enctype="multipart/form-data"
+    <div class="cta-block">
+      <div class="cta-hint">
+        Setelah scan &amp; transfer, klik tombol di bawah untuk mengisi form konfirmasi dan upload bukti transfer.
+      </div>
+      <a
+        href="https://docs.google.com/forms/d/e/1FAIpQLSdZtglp1KG4Gv87e_f9_3sCoHQTzMMtZEXRnSA1uiTl1NfoHA/viewform?usp=publish-editor"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-gform"
       >
-        <!-- Formsubmit config -->
-        <input type="hidden" name="_subject"  value="Konfirmasi Pembayaran Baru 💳" />
-        <input type="hidden" name="_captcha"  value="false" />
-        <input type="hidden" name="_template" value="table" />
-        <!-- Setelah submit redirect balik ke halaman ini dengan ?sukses=1 -->
-        <input type="hidden" name="_next" id="nextUrl" value="" />
-
-        <div class="form-group">
-          <label for="nama">Nama Lengkap<span class="required">*</span></label>
-          <input type="text" id="nama" name="Nama" placeholder="Masukkan nama lengkap Anda" required />
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email<span class="required">*</span></label>
-          <input type="email" id="email" name="Email" placeholder="nama@email.com" required />
-        </div>
-
-        <div class="form-group">
-          <label for="wa">Nomor WhatsApp<span class="required">*</span></label>
-          <input type="tel" id="wa" name="WhatsApp" placeholder="08xx-xxxx-xxxx" required />
-        </div>
-
-        <div class="form-group">
-          <label for="produk">Produk yang Dibeli<span class="required">*</span></label>
-          <select id="produk" name="Produk" required>
-            <option value="">-- Pilih Produk --</option>
-            <option value="Paket Premium A – Rp 250.000">Paket Premium A – Rp 250.000</option>
-            <option value="Paket Standar B – Rp 150.000">Paket Standar B – Rp 150.000</option>
-            <option value="Paket Ekonomi C – Rp 75.000">Paket Ekonomi C – Rp 75.000</option>
-            <option value="Paket Custom">Paket Custom (sesuai kesepakatan)</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Foto Bukti Transfer<span class="required">*</span></label>
-          <div class="file-upload-wrap" id="dropZone">
-            <input type="file" id="buktiFoto" name="Bukti Transfer" accept="image/*" required />
-            <div class="upload-icon">📎</div>
-            <div class="upload-text">Klik atau seret foto ke sini</div>
-            <div class="upload-sub">JPG, PNG, WebP — maks. 5 MB</div>
-          </div>
-          <div class="file-preview" id="filePreview">
-            <img id="previewImg" src="" alt="preview" />
-            <span class="file-preview-name" id="fileName"></span>
-            <button type="button" class="file-remove" id="removeFile">✕</button>
-          </div>
-        </div>
-
-        <button type="submit" class="btn-submit">
-          <span>Kirim Konfirmasi</span>
-          <span>✈️</span>
-        </button>
-      </form>
+        📋 Konfirmasi Pembayaran &amp; Upload Bukti Transfer
+      </a>
     </div>
 
-  </div><!-- /formView -->
-
-  <!-- Thank you screen -->
-  <div class="thankyou" id="thankYouView">
-    <div class="checkmark-circle">✓</div>
-    <h2>Pembayaran Dikonfirmasi!</h2>
-    <p>Terima kasih telah melakukan pembayaran. Data Anda sudah kami terima dan akan segera diproses.</p>
-    <div class="highlight">⏱ Pesanan diproses dalam 1×24 jam</div>
-    <button class="btn-back" id="backBtn">← Buat Konfirmasi Baru</button>
   </div>
 
 </div>
-
-<script>
-  // Set _next ke URL halaman ini + ?sukses=1
-  document.getElementById('nextUrl').value = window.location.href.split('?')[0] + '?sukses=1';
-
-  // Tampilkan terima kasih jika kembali dari formsubmit
-  if (new URLSearchParams(window.location.search).get('sukses') === '1') {
-    document.getElementById('formView').style.display  = 'none';
-    document.getElementById('thankYouView').classList.add('show');
-    // Bersihkan URL tanpa reload
-    history.replaceState(null, '', window.location.pathname);
-  }
-
-  // Tombol kembali
-  document.getElementById('backBtn').addEventListener('click', () => {
-    document.getElementById('formView').style.display  = '';
-    document.getElementById('thankYouView').classList.remove('show');
-  });
-
-  // File preview
-  const fileInput   = document.getElementById('buktiFoto');
-  const filePreview = document.getElementById('filePreview');
-  const previewImg  = document.getElementById('previewImg');
-  const fileNameEl  = document.getElementById('fileName');
-  const removeBtn   = document.getElementById('removeFile');
-  const dropZone    = document.getElementById('dropZone');
-
-  function showPreview(file) {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      previewImg.src = e.target.result;
-      fileNameEl.textContent = file.name;
-      filePreview.classList.add('show');
-    };
-    reader.readAsDataURL(file);
-  }
-
-  fileInput.addEventListener('change', () => {
-    if (fileInput.files[0]) showPreview(fileInput.files[0]);
-  });
-
-  removeBtn.addEventListener('click', () => {
-    fileInput.value = '';
-    filePreview.classList.remove('show');
-    previewImg.src = '';
-    fileNameEl.textContent = '';
-  });
-
-  dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.style.borderColor = '#667eea'; });
-  dropZone.addEventListener('dragleave', () => dropZone.style.borderColor = '');
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.style.borderColor = '';
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      fileInput.files = dt.files;
-      showPreview(file);
-    }
-  });
-</script>
 
 </body>
 </html>
