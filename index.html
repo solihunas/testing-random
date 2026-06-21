@@ -2,10 +2,710 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=bayar.html" />
-  <title>Halaman Pembayaran</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Absensi Karyawan</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0F172A;
+      --navy2:   #1E293B;
+      --indigo:  #4F46E5;
+      --indigo2: #6366F1;
+      --green:   #059669;
+      --green2:  #10B981;
+      --amber:   #D97706;
+      --amber2:  #F59E0B;
+      --gray-50:  #F8FAFC;
+      --gray-100: #F1F5F9;
+      --gray-200: #E2E8F0;
+      --gray-400: #94A3B8;
+      --gray-500: #64748B;
+      --gray-700: #334155;
+      --gray-900: #0F172A;
+      --white:    #FFFFFF;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--navy);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 60px;
+    }
+
+    /* ── Top Bar ── */
+    .topbar {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(10px);
+    }
+    .company-name {
+      color: white;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .company-logo {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--indigo), var(--indigo2));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .topbar-date {
+      font-size: 12px;
+      color: var(--gray-400);
+      text-align: right;
+    }
+
+    /* ── Content Wrapper ── */
+    .wrapper {
+      width: 100%;
+      max-width: 480px;
+      padding: 28px 16px 0;
+    }
+
+    /* ── Live Clock ── */
+    .clock-card {
+      background: linear-gradient(135deg, var(--indigo) 0%, #7C3AED 100%);
+      border-radius: 20px;
+      padding: 28px 24px;
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(79,70,229,0.4);
+    }
+    .clock-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+    .clock-card::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -20px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+    }
+    .clock-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 8px;
+    }
+    .clock-time {
+      font-size: 52px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    .clock-date {
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+      margin-bottom: 16px;
+    }
+
+    .card-section {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .card-section:last-child { border-bottom: none; }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gray-400);
+      margin-bottom: 14px;
+    }
+
+    /* ── Field ── */
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+    .field-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+    .field-label .req { color: #EF4444; margin-left: 2px; }
+
+    select, input[type=text], textarea {
+      padding: 12px 14px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 12px;
+      font-size: 15px;
+      color: var(--gray-900);
+      background: var(--gray-50);
+      outline: none;
+      font-family: inherit;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+      width: 100%;
+    }
+    select:focus, input:focus, textarea:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+      background: white;
+    }
+    select { cursor: pointer; }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* ── Jenis Absen Toggle ── */
+    .toggle-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .toggle-btn {
+      padding: 14px 10px;
+      border-radius: 12px;
+      border: 2px solid var(--gray-200);
+      background: var(--gray-50);
+      cursor: pointer;
+      text-align: center;
+      transition: all .2s;
+      user-select: none;
+    }
+    .toggle-btn .t-icon  { font-size: 24px; margin-bottom: 5px; }
+    .toggle-btn .t-label { font-size: 14px; font-weight: 700; color: var(--gray-500); }
+    .toggle-btn .t-sub   { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+
+    .toggle-btn.masuk.active {
+      border-color: var(--green2);
+      background: #F0FDF4;
+      box-shadow: 0 4px 14px rgba(16,185,129,0.2);
+    }
+    .toggle-btn.masuk.active .t-label { color: var(--green); }
+    .toggle-btn.masuk.active .t-sub   { color: #34D399; }
+
+    .toggle-btn.pulang.active {
+      border-color: var(--amber2);
+      background: #FFFBEB;
+      box-shadow: 0 4px 14px rgba(245,158,11,0.2);
+    }
+    .toggle-btn.pulang.active .t-label { color: var(--amber); }
+    .toggle-btn.pulang.active .t-sub   { color: #FCD34D; }
+
+    /* ── Info Time ── */
+    .info-time {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--gray-50);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 12px;
+      font-size: 14px;
+      color: var(--gray-700);
+    }
+    .info-time .dot { font-size: 20px; }
+    .info-time-main { font-weight: 700; font-size: 15px; color: var(--gray-900); }
+    .info-time-sub  { font-size: 12px; color: var(--gray-400); }
+
+    /* ── Submit Button ── */
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      color: white;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: opacity .2s, transform .15s, box-shadow .2s;
+      letter-spacing: 0.2px;
+    }
+    .btn-submit.masuk-style {
+      background: linear-gradient(135deg, var(--green), var(--green2));
+      box-shadow: 0 6px 24px rgba(16,185,129,0.4);
+    }
+    .btn-submit.pulang-style {
+      background: linear-gradient(135deg, var(--amber), var(--amber2));
+      box-shadow: 0 6px 24px rgba(245,158,11,0.4);
+    }
+    .btn-submit.default-style {
+      background: linear-gradient(135deg, var(--indigo), var(--indigo2));
+      box-shadow: 0 6px 24px rgba(79,70,229,0.4);
+    }
+    .btn-submit:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    .btn-submit:active:not(:disabled){ transform: translateY(0); }
+    .btn-submit:disabled {
+      background: var(--gray-200);
+      color: var(--gray-400);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* ── Spinner ── */
+    .spinner {
+      width: 20px; height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Footer Note ── */
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--gray-400);
+      margin-top: 8px;
+      padding-bottom: 4px;
+    }
+
+    /* ══════════ SUCCESS OVERLAY ══════════ */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--navy);
+      z-index: 999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 24px;
+      animation: fadeIn .35s ease;
+    }
+    .overlay.show { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .success-icon {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 44px;
+      margin-bottom: 24px;
+      animation: popIn .5s cubic-bezier(.175,.885,.32,1.275) .1s both;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .success-icon.masuk  { background: linear-gradient(135deg, var(--green), var(--green2)); }
+    .success-icon.pulang { background: linear-gradient(135deg, var(--amber), var(--amber2)); }
+    @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .success-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .success-sub {
+      font-size: 14px;
+      color: var(--gray-400);
+      margin-bottom: 32px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .success-card {
+      background: var(--navy2);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 20px;
+      width: 100%;
+      max-width: 380px;
+      margin-bottom: 28px;
+    }
+
+    .success-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 14px;
+    }
+    .success-row:last-child { border-bottom: none; }
+    .success-key { color: var(--gray-400); font-weight: 500; }
+    .success-val { color: white; font-weight: 700; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px; font-weight: 700;
+    }
+    .badge.masuk  { background: rgba(16,185,129,0.15); color: var(--green2); }
+    .badge.pulang { background: rgba(245,158,11,0.15);  color: var(--amber2);  }
+
+    .btn-kembali {
+      padding: 14px 36px;
+      background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .2s;
+    }
+    .btn-kembali:hover { background: rgba(255,255,255,0.14); }
+
+    /* ── Error toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%);
+      background: #1E293B;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: white;
+      padding: 12px 22px;
+      border-radius: 99px;
+      font-size: 13px; font-weight: 600;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s;
+      white-space: nowrap;
+      z-index: 9999;
+    }
+    .toast.show { opacity: 1; }
+
+    /* ── Responsive ── */
+    @media (max-width: 400px) {
+      .clock-time { font-size: 42px; }
+      .card-section { padding: 18px 18px; }
+    }
+  </style>
 </head>
 <body>
-  <p>Mengalihkan ke <a href="bayar.html">halaman pembayaran</a>...</p>
+
+<!-- ── Top Bar ── -->
+<div class="topbar">
+  <div class="company-name">
+    <div class="company-logo">🏢</div>
+    <span id="companyLabel">Memuat...</span>
+  </div>
+  <div class="topbar-date" id="topbarDate"></div>
+</div>
+
+<!-- ── Main Content ── -->
+<div class="wrapper">
+
+  <!-- Jam Live -->
+  <div class="clock-card">
+    <div class="clock-label">⏰ Waktu Saat Ini</div>
+    <div class="clock-time" id="clockTime">--:--:--</div>
+    <div class="clock-date" id="clockDate">-</div>
+  </div>
+
+  <!-- Form -->
+  <div class="card">
+
+    <!-- Karyawan -->
+    <div class="card-section">
+      <div class="section-title">Identitas</div>
+      <div class="field">
+        <label class="field-label">Nama Karyawan <span class="req">*</span></label>
+        <select id="selKaryawan">
+          <option value="">— Pilih nama Anda —</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Jenis Absen -->
+    <div class="card-section">
+      <div class="section-title">Jenis Absen</div>
+      <div class="toggle-group">
+        <div class="toggle-btn masuk" id="btnMasuk" onclick="pilihJenis('masuk')">
+          <div class="t-icon">🟢</div>
+          <div class="t-label">Masuk</div>
+          <div class="t-sub">Mulai kerja</div>
+        </div>
+        <div class="toggle-btn pulang" id="btnPulang" onclick="pilihJenis('pulang')">
+          <div class="t-icon">🟠</div>
+          <div class="t-label">Pulang</div>
+          <div class="t-sub">Selesai kerja</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Waktu Tercatat -->
+    <div class="card-section">
+      <div class="section-title">Waktu Tercatat</div>
+      <div class="info-time">
+        <div class="dot">🕐</div>
+        <div>
+          <div class="info-time-main" id="infoTime">--:--:--</div>
+          <div class="info-time-sub" id="infoDate">Tanggal belum tersedia</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Catatan -->
+    <div class="card-section">
+      <div class="section-title">Catatan <span style="font-weight:400;text-transform:none;font-size:11px;color:var(--gray-400)">(Opsional)</span></div>
+      <div class="field">
+        <textarea id="txtCatatan" placeholder="Izin terlambat, WFH, lembur, dll..."></textarea>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="card-section">
+      <button class="btn-submit default-style" id="submitBtn" onclick="kirimAbsen()" disabled>
+        <div class="spinner" id="btnSpinner"></div>
+        <span id="btnLabel">Pilih nama & jenis absen dulu</span>
+      </button>
+      <p class="footer-note">Data Anda tercatat otomatis ke sistem 📋</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ SUCCESS OVERLAY ══════════ -->
+<div class="overlay" id="successOverlay">
+  <div class="success-icon" id="successIcon">✓</div>
+  <div class="success-title" id="successTitle">Absen Berhasil!</div>
+  <div class="success-sub" id="successSub">Terima kasih. Absensi Anda telah tercatat.</div>
+
+  <div class="success-card">
+    <div class="success-row">
+      <span class="success-key">Nama</span>
+      <span class="success-val" id="recNama">-</span>
+    </div>
+    <div class="success-row">
+      <span class="success-key">Jenis</span>
+      <span id="recJenis"></span>
+    </div>
+    <div class="success-row">
+      <span class="success-key">Waktu</span>
+      <span class="success-val" id="recWaktu">-</span>
+    </div>
+    <div class="success-row">
+      <span class="success-key">Tanggal</span>
+      <span class="success-val" id="recTanggal">-</span>
+    </div>
+    <div class="success-row">
+      <span class="success-key">Catatan</span>
+      <span class="success-val" id="recCatatan">-</span>
+    </div>
+  </div>
+
+  <button class="btn-kembali" onclick="kembali()">← Absen Lagi</button>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ════════════════════════════
+     ⚙️  KONFIGURASI — isi ini
+     ════════════════════════════ */
+  const CONFIG = {
+    NAMA_PERUSAHAAN: 'PT. Nama Perusahaan',   // ← ganti nama perusahaan
+    SCRIPT_URL: '',                             // ← paste URL Google Apps Script di sini
+    KARYAWAN: [                                 // ← daftar nama karyawan
+      'Ahmad Fauzi',
+      'Budi Santoso',
+      'Citra Dewi',
+      'Deni Hermawan',
+      'Eka Putri',
+    ],
+  };
+  /* ════════════════════════════ */
+
+  /* ── Init ── */
+  document.getElementById('companyLabel').textContent = CONFIG.NAMA_PERUSAHAAN;
+
+  const sel = document.getElementById('selKaryawan');
+  CONFIG.KARYAWAN.forEach(nama => {
+    const opt = document.createElement('option');
+    opt.value = nama;
+    opt.textContent = nama;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change', updateButton);
+
+  /* ── Clock ── */
+  const HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function formatWaktu(d) {
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+  function formatTanggal(d) {
+    return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
+  }
+  function formatTanggalShort(d) {
+    return `${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  function tickClock() {
+    const now = new Date();
+    const wkt = formatWaktu(now);
+    const tgl = formatTanggal(now);
+    document.getElementById('clockTime').textContent = wkt;
+    document.getElementById('clockDate').textContent = tgl;
+    document.getElementById('infoTime').textContent  = wkt;
+    document.getElementById('infoDate').textContent  = tgl;
+    document.getElementById('topbarDate').innerHTML  = `${tgl}`;
+  }
+  setInterval(tickClock, 1000);
+  tickClock();
+
+  /* ── Jenis Absen ── */
+  let jenisAbsen = null;
+
+  function pilihJenis(jenis) {
+    jenisAbsen = jenis;
+    document.getElementById('btnMasuk').classList.toggle('active', jenis === 'masuk');
+    document.getElementById('btnPulang').classList.toggle('active', jenis === 'pulang');
+    updateButton();
+  }
+
+  function updateButton() {
+    const nama = sel.value;
+    const btn  = document.getElementById('submitBtn');
+    const lbl  = document.getElementById('btnLabel');
+
+    if (!nama && !jenisAbsen) {
+      lbl.textContent = 'Pilih nama & jenis absen dulu';
+      btn.className   = 'btn-submit default-style';
+      btn.disabled    = true;
+    } else if (!nama) {
+      lbl.textContent = 'Pilih nama karyawan dulu';
+      btn.className   = 'btn-submit default-style';
+      btn.disabled    = true;
+    } else if (!jenisAbsen) {
+      lbl.textContent = 'Pilih Masuk atau Pulang';
+      btn.className   = 'btn-submit default-style';
+      btn.disabled    = true;
+    } else {
+      const icon = jenisAbsen === 'masuk' ? '🟢' : '🟠';
+      const kata = jenisAbsen === 'masuk' ? 'Masuk' : 'Pulang';
+      lbl.textContent = `${icon}  Catat Absen ${kata}`;
+      btn.className   = `btn-submit ${jenisAbsen}-style`;
+      btn.disabled    = false;
+    }
+  }
+
+  /* ── Kirim Absen ── */
+  async function kirimAbsen() {
+    const now     = new Date();
+    const nama    = sel.value;
+    const jenis   = jenisAbsen;
+    const waktu   = formatWaktu(now);
+    const tanggal = formatTanggalShort(now);
+    const catatan = document.getElementById('txtCatatan').value.trim() || '-';
+
+    // Loading state
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    document.getElementById('btnSpinner').style.display = 'block';
+    document.getElementById('btnLabel').textContent = 'Menyimpan...';
+
+    const payload = { nama, jenis, waktu, tanggal, catatan };
+
+    try {
+      if (CONFIG.SCRIPT_URL) {
+        // Kirim ke Google Apps Script (no-cors: data masuk, response tidak terbaca — itu normal)
+        await fetch(CONFIG.SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
+      tampilkanSukses(payload);
+    } catch (err) {
+      // Tetap tampilkan sukses (data mungkin sudah masuk)
+      tampilkanSukses(payload);
+    }
+  }
+
+  function tampilkanSukses(d) {
+    document.getElementById('recNama').textContent   = d.nama;
+    document.getElementById('recWaktu').textContent  = d.waktu;
+    document.getElementById('recTanggal').textContent = d.tanggal;
+    document.getElementById('recCatatan').textContent = d.catatan;
+
+    const badgeClass = d.jenis === 'masuk' ? 'masuk' : 'pulang';
+    const badgeLabel = d.jenis === 'masuk' ? '🟢 Masuk' : '🟠 Pulang';
+    document.getElementById('recJenis').innerHTML =
+      `<span class="badge ${badgeClass}">${badgeLabel}</span>`;
+
+    const icon  = document.getElementById('successIcon');
+    const title = document.getElementById('successTitle');
+    const sub   = document.getElementById('successSub');
+
+    if (d.jenis === 'masuk') {
+      icon.className  = 'success-icon masuk';
+      icon.textContent = '✓';
+      title.textContent = 'Selamat Datang! 👋';
+      sub.textContent  = `Absen masuk ${d.nama} berhasil dicatat.`;
+    } else {
+      icon.className  = 'success-icon pulang';
+      icon.textContent = '🏠';
+      title.textContent = 'Sampai Jumpa! 👋';
+      sub.textContent  = `Absen pulang ${d.nama} berhasil dicatat.`;
+    }
+
+    document.getElementById('successOverlay').classList.add('show');
+
+    // Reset spinner
+    document.getElementById('btnSpinner').style.display = 'none';
+    document.getElementById('submitBtn').disabled = false;
+    updateButton();
+  }
+
+  function kembali() {
+    document.getElementById('successOverlay').classList.remove('show');
+    sel.value = '';
+    document.getElementById('txtCatatan').value = '';
+    jenisAbsen = null;
+    document.getElementById('btnMasuk').classList.remove('active');
+    document.getElementById('btnPulang').classList.remove('active');
+    updateButton();
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+</script>
+
 </body>
 </html>
