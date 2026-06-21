@@ -389,24 +389,13 @@
     document.getElementById('spin').style.display = 'block';
     document.getElementById('btnLbl').textContent = 'Menyimpan...';
 
-    // Buat form tersembunyi → submit ke iframe (tidak reload halaman, tidak ada CORS)
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = SCRIPT_URL;
-    form.target = 'frm_target';
+    // Kirim via GET params (simple request, no CORS preflight, tidak ada body yang hilang di redirect)
+    const params = new URLSearchParams({ nama, jenis, waktu, tanggal, catatan });
+    fetch(SCRIPT_URL + '?' + params.toString(), { method: 'GET', mode: 'no-cors' })
+      .catch(() => {});
 
-    [['nama',nama],['jenis',jenis],['waktu',waktu],['tanggal',tanggal],['catatan',catatan]].forEach(([k,v]) => {
-      const inp = document.createElement('input');
-      inp.type='hidden'; inp.name=k; inp.value=v;
-      form.appendChild(inp);
-    });
-
-    document.body.appendChild(form);
-    form.submit();
-    form.remove();
-
-    // Tampilkan sukses setelah 1.5 detik
-    setTimeout(() => tampilSukses({ nama, jenis, waktu, tanggal, catatan }), 1500);
+    // Tampilkan sukses setelah 2 detik
+    setTimeout(() => tampilSukses({ nama, jenis, waktu, tanggal, catatan }), 2000);
   }
 
   function tampilSukses(d) {
