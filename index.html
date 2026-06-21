@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pembayaran — IPI DIGITAL</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0F172A;
+      --navy2:  #1E293B;
+      --indigo: #4F46E5;
+      --ind2:   #6366F1;
+      --green:  #059669;
+      --grn2:   #10B981;
+      --g50:    #F8FAFC;
+      --g100:   #F1F5F9;
+      --g200:   #E2E8F0;
+      --g400:   #94A3B8;
+      --g500:   #64748B;
+      --g700:   #334155;
+      --g900:   #0F172A;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(145deg, #0F172A 0%, #1E1B4B 50%, #4C1D95 100%);
+      min-height: 100vh;
+      padding-bottom: 80px;
+      color: var(--g900);
+    }
+
+    .topbar {
+      background: rgba(255,255,255,.05);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      padding: 14px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-logo {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--indigo), var(--ind2));
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+    }
+    .brand-name { color: #fff; font-size: 15px; font-weight: 800; }
+    .brand-sub  { color: var(--g400); font-size: 11px; }
+
+    .wrap { max-width: 480px; margin: 0 auto; padding: 28px 16px 0; }
+
+    .hero { text-align: center; margin-bottom: 24px; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(99,102,241,.2); color: #a5b4fc;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 99px; margin-bottom: 12px;
+      border: 1px solid rgba(99,102,241,.3);
+    }
+    .hero h1 { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .hero p  { font-size: 13px; color: var(--g400); line-height: 1.6; }
+
+    .card {
+      background: #fff; border-radius: 20px;
+      overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,.3);
+      margin-bottom: 14px;
+    }
+    .card-sec {
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--g100);
+    }
+    .card-sec:last-child { border-bottom: none; }
+    .sec-title {
+      font-size: 10px; font-weight: 800; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--g400); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .sec-num {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--indigo); color: #fff;
+      font-size: 10px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    select, input[type=text], input[type=email] {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--g200); border-radius: 12px;
+      font-size: 15px; color: var(--g900); background: var(--g50);
+      outline: none; font-family: inherit;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    select:focus, input:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(79,70,229,.1);
+      background: #fff;
+    }
+
+    .produk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .produk-item {
+      padding: 14px 12px; border-radius: 14px;
+      border: 2px solid var(--g200); background: var(--g50);
+      cursor: pointer; text-align: center; transition: all .2s; user-select: none;
+    }
+    .produk-item .p-icon  { font-size: 28px; margin-bottom: 6px; }
+    .produk-item .p-name  { font-size: 13px; font-weight: 700; color: var(--g500); }
+    .produk-item .p-price { font-size: 12px; color: var(--g400); margin-top: 3px; }
+    .produk-item.on { border-color: var(--indigo); background: #EEF2FF; box-shadow: 0 4px 14px rgba(79,70,229,.18); }
+    .produk-item.on .p-name { color: var(--indigo); }
+
+    .metode-list { display: flex; flex-direction: column; gap: 10px; }
+    .metode-item {
+      padding: 14px 16px; border-radius: 14px;
+      border: 2px solid var(--g200); background: var(--g50);
+      cursor: pointer; display: flex; align-items: center; gap: 14px;
+      transition: all .2s; user-select: none;
+    }
+    .metode-item .m-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; background: var(--g100); flex-shrink: 0;
+    }
+    .metode-item .m-info { flex: 1; }
+    .metode-item .m-bank { font-size: 13px; font-weight: 800; color: var(--g900); }
+    .metode-item .m-rek  { font-size: 12px; color: var(--g400); margin-top: 2px; font-family: monospace; }
+    .metode-item .m-nama { font-size: 11px; color: var(--g500); margin-top: 1px; }
+    .metode-item .m-check {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid var(--g200); background: #fff; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; transition: all .2s;
+    }
+    .metode-item.on { border-color: var(--indigo); background: #EEF2FF; }
+    .metode-item.on .m-bank { color: var(--indigo); }
+    .metode-item.on .m-check { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+
+    .instruksi {
+      display: none; margin-top: 14px;
+      background: linear-gradient(135deg, #EEF2FF, #F0FDF4);
+      border: 1.5px solid #c7d2fe; border-radius: 14px; padding: 16px 18px;
+    }
+    .instruksi.show { display: block; }
+    .instruksi-title {
+      font-size: 11px; font-weight: 800; letter-spacing: .8px;
+      text-transform: uppercase; color: var(--indigo); margin-bottom: 10px;
+    }
+    .instruksi-step { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+    .instruksi-step:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--indigo); color: #fff;
+      font-size: 10px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .step-text { font-size: 13px; color: var(--g700); line-height: 1.5; }
+    .step-text strong { color: var(--g900); }
+    .copy-rek {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--indigo); color: #fff;
+      font-size: 11px; font-weight: 700; padding: 4px 10px;
+      border-radius: 6px; cursor: pointer; margin-top: 4px;
+      border: none; font-family: inherit;
+    }
+
+    .upload-box {
+      border: 2px dashed var(--g200); border-radius: 14px;
+      padding: 24px; text-align: center; background: var(--g50);
+      cursor: pointer; transition: all .2s; position: relative;
+    }
+    .upload-box:hover { border-color: var(--indigo); background: #EEF2FF; }
+    .upload-box input[type=file] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .upload-icon  { font-size: 32px; margin-bottom: 8px; }
+    .upload-title { font-size: 14px; font-weight: 700; color: var(--g700); margin-bottom: 4px; }
+    .upload-sub   { font-size: 12px; color: var(--g400); line-height: 1.5; }
+    .upload-preview {
+      display: none; margin-top: 12px;
+      background: #F0FDF4; border: 1.5px solid var(--grn2);
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 13px; color: var(--green); font-weight: 700;
+      align-items: center; gap: 8px;
+    }
+    .upload-preview.show { display: flex; }
+
+    .btn-submit {
+      width: 100%; padding: 16px; border: none; border-radius: 14px;
+      font-size: 15px; font-weight: 800; color: #fff;
+      cursor: pointer; font-family: inherit;
+      background: linear-gradient(135deg, var(--indigo), var(--ind2));
+      box-shadow: 0 6px 24px rgba(79,70,229,.4);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: opacity .2s, transform .15s;
+    }
+    .btn-submit:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
+    .btn-submit:disabled { background: var(--g200) !important; color: var(--g400); cursor: not-allowed; box-shadow: none; }
+    .spin {
+      width: 18px; height: 18px;
+      border: 3px solid rgba(255,255,255,.3); border-top-color: #fff;
+      border-radius: 50%; animation: sp .7s linear infinite; display: none;
+    }
+    @keyframes sp { to { transform: rotate(360deg); } }
+    .foot-note { text-align: center; font-size: 12px; color: var(--g400); margin-top: 10px; line-height: 1.5; }
+
+    .overlay {
+      display: none; position: fixed; inset: 0; background: var(--navy);
+      flex-direction: column; align-items: center; justify-content: center;
+      padding: 32px 24px; z-index: 99;
+    }
+    .overlay.show { display: flex; }
+    .suc-icon {
+      width: 92px; height: 92px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green), var(--grn2));
+      display: flex; align-items: center; justify-content: center; font-size: 42px;
+      margin-bottom: 22px;
+      animation: po .5s cubic-bezier(.175,.885,.32,1.275) .1s both;
+      box-shadow: 0 12px 40px rgba(0,0,0,.4);
+    }
+    @keyframes po { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .suc-title { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 8px; text-align: center; }
+    .suc-sub   { font-size: 13px; color: var(--g400); margin-bottom: 28px; text-align: center; line-height: 1.7; }
+    .suc-card {
+      background: var(--navy2); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px; padding: 18px; width: 100%; max-width: 380px; margin-bottom: 24px;
+    }
+    .suc-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.06); font-size: 13px;
+    }
+    .suc-row:last-child { border-bottom: none; }
+    .suc-k { color: var(--g400); font-weight: 500; }
+    .suc-v { color: #fff; font-weight: 700; text-align: right; max-width: 200px; word-break: break-all; }
+    .btn-back {
+      padding: 13px 36px;
+      background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.12);
+      border-radius: 13px; color: #fff; font-size: 14px; font-weight: 700;
+      cursor: pointer; font-family: inherit; transition: background .2s;
+    }
+    .btn-back:hover { background: rgba(255,255,255,.14); }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">⚡</div>
+    <div>
+      <div class="brand-name">IPI DIGITAL</div>
+      <div class="brand-sub">Form Pemesanan</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-badge">✦ Produk Digital</div>
+    <h1>Pilih & Bayar Sekarang</h1>
+    <p>Isi form di bawah, lakukan pembayaran,<br>kirim bukti — pesanan diproses otomatis.</p>
+  </div>
+
+  <div class="card">
+
+    <!-- 1. Produk -->
+    <div class="card-sec">
+      <div class="sec-title"><div class="sec-num">1</div> Pilih Produk</div>
+      <div class="produk-grid">
+        <div class="produk-item" onclick="pilihProduk(this,'Produk A','Rp 50.000')">
+          <div class="p-icon">🎯</div>
+          <div class="p-name">Produk A</div>
+          <div class="p-price">Rp 50.000</div>
+        </div>
+        <div class="produk-item" onclick="pilihProduk(this,'Produk B','Rp 75.000')">
+          <div class="p-icon">🚀</div>
+          <div class="p-name">Produk B</div>
+          <div class="p-price">Rp 75.000</div>
+        </div>
+        <div class="produk-item" onclick="pilihProduk(this,'Produk C','Rp 100.000')">
+          <div class="p-icon">💎</div>
+          <div class="p-name">Produk C</div>
+          <div class="p-price">Rp 100.000</div>
+        </div>
+        <div class="produk-item" onclick="pilihProduk(this,'Produk D','Rp 150.000')">
+          <div class="p-icon">👑</div>
+          <div class="p-name">Produk D</div>
+          <div class="p-price">Rp 150.000</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Kontak -->
+    <div class="card-sec">
+      <div class="sec-title"><div class="sec-num">2</div> Kontak Anda</div>
+      <input type="text" id="inpKontak" placeholder="Email atau nomor WhatsApp" oninput="updateInstruksi();cekForm();" />
+    </div>
+
+    <!-- 3. Metode -->
+    <div class="card-sec">
+      <div class="sec-title"><div class="sec-num">3</div> Metode Pembayaran</div>
+      <div class="metode-list">
+        <div class="metode-item" onclick="pilihMetode(this,'Bank A','1234567890','Solihun')">
+          <div class="m-icon">🏦</div>
+          <div class="m-info">
+            <div class="m-bank">Bank A</div>
+            <div class="m-rek">1234567890</div>
+            <div class="m-nama">a.n. Solihun</div>
+          </div>
+          <div class="m-check">✓</div>
+        </div>
+        <div class="metode-item" onclick="pilihMetode(this,'Bank B','0987654321','Solihun')">
+          <div class="m-icon">💳</div>
+          <div class="m-info">
+            <div class="m-bank">Bank B</div>
+            <div class="m-rek">0987654321</div>
+            <div class="m-nama">a.n. Solihun</div>
+          </div>
+          <div class="m-check">✓</div>
+        </div>
+      </div>
+
+      <div class="instruksi" id="boxInstruksi">
+        <div class="instruksi-title">📋 Instruksi Pembayaran</div>
+        <div class="instruksi-step">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            Transfer sebesar <strong id="iHarga">-</strong> ke rekening<br>
+            <strong id="iBank">-</strong> · <span id="iRek" style="font-family:monospace">-</span> · a.n. <strong id="iNama">-</strong><br>
+            <button class="copy-rek" onclick="copyRek()">📋 Salin Nomor Rekening</button>
+          </div>
+        </div>
+        <div class="instruksi-step">
+          <div class="step-num">2</div>
+          <div class="step-text">Simpan <strong>screenshot / foto bukti transfer</strong> Anda.</div>
+        </div>
+        <div class="instruksi-step">
+          <div class="step-num">3</div>
+          <div class="step-text">Upload bukti di bawah — <strong id="iProduk">-</strong> akan dikirim ke kontak Anda setelah dikonfirmasi.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Bukti -->
+    <div class="card-sec">
+      <div class="sec-title"><div class="sec-num">4</div> Bukti Pembayaran</div>
+      <div class="upload-box">
+        <input type="file" id="fileBukti" accept="image/*" onchange="previewFile()" />
+        <div class="upload-icon">📎</div>
+        <div class="upload-title">Upload Foto Bukti Transfer</div>
+        <div class="upload-sub">
+          Foto atau screenshot bukti transfer<br>
+          <em style="color:var(--indigo);font-style:normal">Foto langsung diterima melalui kontak pembeli</em>
+        </div>
+      </div>
+      <div class="upload-preview" id="uploadPreview">
+        <span>✅</span><span id="namaFile">-</span>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="card-sec">
+      <button class="btn-submit" id="btnSubmit" onclick="kirimForm()" disabled>
+        <div class="spin" id="spin"></div>
+        <span id="btnLbl">Lengkapi form terlebih dahulu</span>
+      </button>
+      <p class="foot-note">
+        📨 Data & bukti bayar langsung masuk ke Telegram<br>
+        Pesanan diproses dalam 1×24 jam
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Overlay Sukses -->
+<div class="overlay" id="ovSukses">
+  <div class="suc-icon">✓</div>
+  <div class="suc-title">Pesanan Diterima! 🎉</div>
+  <div class="suc-sub">
+    Bukti pembayaran sudah kami terima.<br>
+    Produk akan dikirim ke kontak Anda setelah konfirmasi.
+  </div>
+  <div class="suc-card">
+    <div class="suc-row"><span class="suc-k">Produk</span> <span class="suc-v" id="rProduk">-</span></div>
+    <div class="suc-row"><span class="suc-k">Harga</span>  <span class="suc-v" id="rHarga">-</span></div>
+    <div class="suc-row"><span class="suc-k">Kontak</span> <span class="suc-v" id="rKontak">-</span></div>
+    <div class="suc-row"><span class="suc-k">Metode</span> <span class="suc-v" id="rMetode">-</span></div>
+    <div class="suc-row"><span class="suc-k">Waktu</span>  <span class="suc-v" id="rWaktu">-</span></div>
+  </div>
+  <button class="btn-back" onclick="kembali()">← Pesan Lagi</button>
+</div>
+
+<script>
+  const BOT_TOKEN = '8678906121:AAHyYTcx0SjyEJcNxoX3kfg3uFFUAIRQa4M';
+  const CHAT_ID   = '6824927884';
+
+  let produkDipilih = null, hargaDipilih = null;
+  let metodeDipilih = null, rekDipilih = null, namaBankDipilih = null;
+  let fileDipilih   = null;
+
+  function pilihProduk(el, nama, harga) {
+    document.querySelectorAll('.produk-item').forEach(i => i.classList.remove('on'));
+    el.classList.add('on');
+    produkDipilih = nama;
+    hargaDipilih  = harga;
+    updateInstruksi(); cekForm();
+  }
+
+  function pilihMetode(el, bank, rek, nama) {
+    document.querySelectorAll('.metode-item').forEach(i => i.classList.remove('on'));
+    el.classList.add('on');
+    metodeDipilih   = bank;
+    rekDipilih      = rek;
+    namaBankDipilih = nama;
+    updateInstruksi(); cekForm();
+  }
+
+  function updateInstruksi() {
+    const kontak = document.getElementById('inpKontak').value.trim();
+    if (produkDipilih && kontak && metodeDipilih) {
+      document.getElementById('iHarga').textContent  = hargaDipilih;
+      document.getElementById('iBank').textContent   = metodeDipilih;
+      document.getElementById('iRek').textContent    = rekDipilih;
+      document.getElementById('iNama').textContent   = namaBankDipilih;
+      document.getElementById('iProduk').textContent = produkDipilih;
+      document.getElementById('boxInstruksi').classList.add('show');
+    } else {
+      document.getElementById('boxInstruksi').classList.remove('show');
+    }
+  }
+
+  function copyRek() {
+    if (!rekDipilih) return;
+    navigator.clipboard.writeText(rekDipilih).then(() => {
+      const btn = document.querySelector('.copy-rek');
+      btn.textContent = '✅ Tersalin!';
+      setTimeout(() => btn.textContent = '📋 Salin Nomor Rekening', 2000);
+    });
+  }
+
+  function previewFile() {
+    const f = document.getElementById('fileBukti').files[0];
+    if (!f) return;
+    fileDipilih = f;
+    document.getElementById('namaFile').textContent = f.name;
+    document.getElementById('uploadPreview').classList.add('show');
+    cekForm();
+  }
+
+  function cekForm() {
+    const kontak = document.getElementById('inpKontak').value.trim();
+    const btn    = document.getElementById('btnSubmit');
+    const lbl    = document.getElementById('btnLbl');
+    if (produkDipilih && kontak && metodeDipilih && fileDipilih) {
+      btn.disabled    = false;
+      lbl.textContent = `🚀  Kirim Pesanan — ${hargaDipilih}`;
+    } else {
+      btn.disabled = true;
+      if (!produkDipilih)      lbl.textContent = 'Pilih produk terlebih dahulu';
+      else if (!kontak)        lbl.textContent = 'Isi kontak email / WhatsApp';
+      else if (!metodeDipilih) lbl.textContent = 'Pilih metode pembayaran';
+      else                     lbl.textContent = 'Upload bukti pembayaran';
+    }
+  }
+
+  async function kirimForm() {
+    const kontak  = document.getElementById('inpKontak').value.trim();
+    const now     = new Date();
+    const pad     = n => String(n).padStart(2,'0');
+    const BULAN   = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    const waktu   = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    const tanggal = `${now.getDate()} ${BULAN[now.getMonth()]} ${now.getFullYear()}`;
+
+    document.getElementById('btnSubmit').disabled = true;
+    document.getElementById('spin').style.display = 'block';
+    document.getElementById('btnLbl').textContent = 'Mengirim pesanan...';
+
+    const caption =
+`🛒 *PESANAN BARU — IPI DIGITAL*
+
+📦 *Produk:* ${produkDipilih}
+💰 *Harga:* ${hargaDipilih}
+📱 *Kontak:* ${kontak}
+🏦 *Metode:* ${metodeDipilih} · ${rekDipilih}
+🕐 *Waktu:* ${waktu} · ${tanggal}
+
+✅ _Segera konfirmasi & kirim produk ke pembeli._`;
+
+    try {
+      const formData = new FormData();
+      formData.append('chat_id', CHAT_ID);
+      formData.append('photo', fileDipilih);
+      formData.append('caption', caption);
+      formData.append('parse_mode', 'Markdown');
+
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+        method: 'POST',
+        body: formData
+      });
+
+      // Tampil sukses
+      document.getElementById('rProduk').textContent  = produkDipilih;
+      document.getElementById('rHarga').textContent   = hargaDipilih;
+      document.getElementById('rKontak').textContent  = kontak;
+      document.getElementById('rMetode').textContent  = metodeDipilih + ' · ' + rekDipilih;
+      document.getElementById('rWaktu').textContent   = waktu + ' · ' + tanggal;
+      document.getElementById('ovSukses').classList.add('show');
+
+    } catch (err) {
+      alert('Gagal mengirim. Cek koneksi internet dan coba lagi.');
+      document.getElementById('btnSubmit').disabled = false;
+      document.getElementById('btnLbl').textContent = `🚀  Kirim Pesanan — ${hargaDipilih}`;
+    }
+
+    document.getElementById('spin').style.display = 'none';
+  }
+
+  function kembali() {
+    document.getElementById('ovSukses').classList.remove('show');
+    document.querySelectorAll('.produk-item').forEach(i => i.classList.remove('on'));
+    document.querySelectorAll('.metode-item').forEach(i => i.classList.remove('on'));
+    document.getElementById('inpKontak').value = '';
+    document.getElementById('fileBukti').value = '';
+    document.getElementById('uploadPreview').classList.remove('show');
+    document.getElementById('boxInstruksi').classList.remove('show');
+    produkDipilih = hargaDipilih = metodeDipilih = rekDipilih = namaBankDipilih = fileDipilih = null;
+    document.getElementById('btnSubmit').disabled = true;
+    document.getElementById('btnLbl').textContent = 'Lengkapi form terlebih dahulu';
+  }
+</script>
+
+</body>
+</html>
