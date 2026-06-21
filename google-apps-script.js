@@ -1,70 +1,57 @@
-/**
- * GOOGLE APPS SCRIPT — Absensi Karyawan (versi GET)
- * ----------------------------------------
- * ⚠️  SETELAH UPDATE KODE INI:
- * 1. Klik Save (💾)
- * 2. Klik Deploy > Manage deployments
- * 3. Klik ikon pensil (Edit) pada deployment yang ada
- * 4. Di "Version" pilih "New version"
- * 5. Klik Deploy
- * (URL tidak berubah, cukup update versinya)
- */
+// ─────────────────────────────────────────────
+//  GOOGLE APPS SCRIPT — Absensi IPI DIGITAL
+//  Versi: doPost (menerima form submission)
+// ─────────────────────────────────────────────
 
-const SHEET_NAME = 'Absensi';
-const HEADERS    = ['Timestamp', 'Nama', 'Jenis', 'Waktu', 'Tanggal', 'Catatan'];
-
-function doGet(e) {
+function doPost(e) {
   try {
-    const ss  = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = ss.getSheetByName(SHEET_NAME);
+    var ss    = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName('Absensi');
 
     // Buat sheet + header jika belum ada
     if (!sheet) {
-      sheet = ss.insertSheet(SHEET_NAME);
-      const hr = sheet.getRange(1, 1, 1, HEADERS.length);
-      sheet.appendRow(HEADERS);
-      hr.setFontWeight('bold');
-      hr.setBackground('#4F46E5');
-      hr.setFontColor('#FFFFFF');
+      sheet = ss.insertSheet('Absensi');
+      sheet.appendRow(['Timestamp', 'Nama', 'Jenis', 'Waktu', 'Tanggal', 'Catatan']);
+      var h = sheet.getRange(1, 1, 1, 6);
+      h.setFontWeight('bold');
+      h.setBackground('#4F46E5');
+      h.setFontColor('#FFFFFF');
       sheet.setFrozenRows(1);
     }
 
-    // Ambil data dari URL parameter
-    const p = e.parameter;
+    var p = e.parameter;
 
-    // Validasi minimal
-    if (!p.nama || !p.jenis) {
-      return jsonResponse({ success: false, error: 'Parameter nama/jenis kosong' });
-    }
-
-    // Tulis baris baru
     sheet.appendRow([
-      new Date(),          // Timestamp server (lebih akurat)
+      new Date(),
       p.nama    || '',
       p.jenis   || '',
       p.waktu   || '',
       p.tanggal || '',
-      p.catatan || '-',
+      p.catatan || '-'
     ]);
 
-    sheet.autoResizeColumns(1, HEADERS.length);
-
-    return jsonResponse({ success: true, pesan: 'Absensi ' + p.nama + ' tercatat!' });
+    return ContentService
+      .createTextOutput('OK')
+      .setMimeType(ContentService.MimeType.TEXT);
 
   } catch (err) {
-    return jsonResponse({ success: false, error: err.toString() });
+    return ContentService
+      .createTextOutput('ERROR: ' + err.toString())
+      .setMimeType(ContentService.MimeType.TEXT);
   }
 }
 
-function jsonResponse(obj) {
-  return ContentService
-    .createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-// Fungsi test — jalankan manual dari editor untuk cek
-function testCoba() {
-  const e = { parameter: { nama: 'Solihun', jenis: 'masuk', waktu: '08:00:00', tanggal: '21 Jun 2026', catatan: 'Test' } };
-  const result = doGet(e);
-  Logger.log(result.getContent());
+// Jalankan fungsi ini dari editor untuk test manual
+function testManual() {
+  var fakeEvent = {
+    parameter: {
+      nama: 'Solihun',
+      jenis: 'masuk',
+      waktu: '08:00:00',
+      tanggal: '21 Jun 2026',
+      catatan: 'Test berhasil'
+    }
+  };
+  var result = doPost(fakeEvent);
+  Logger.log(result.getContent()); // harus tampil "OK"
 }
