@@ -1,80 +1,70 @@
 /**
- * GOOGLE APPS SCRIPT — Absensi Karyawan
+ * GOOGLE APPS SCRIPT — Absensi Karyawan (versi GET)
  * ----------------------------------------
- * Cara pakai:
- * 1. Buka Google Sheets yang sudah kamu buat
- * 2. Klik menu Extensions > Apps Script
- * 3. Hapus semua kode yang ada, paste seluruh kode ini
- * 4. Klik Save (ikon disket)
- * 5. Klik Deploy > New deployment
- * 6. Pilih type: Web app
- * 7. Execute as: Me
- * 8. Who has access: Anyone
- * 9. Klik Deploy, copy URL-nya, kirim ke admin
+ * ⚠️  SETELAH UPDATE KODE INI:
+ * 1. Klik Save (💾)
+ * 2. Klik Deploy > Manage deployments
+ * 3. Klik ikon pensil (Edit) pada deployment yang ada
+ * 4. Di "Version" pilih "New version"
+ * 5. Klik Deploy
+ * (URL tidak berubah, cukup update versinya)
  */
 
-// Nama sheet (tab) di Google Spreadsheet
 const SHEET_NAME = 'Absensi';
+const HEADERS    = ['Timestamp', 'Nama', 'Jenis', 'Waktu', 'Tanggal', 'Catatan'];
 
-// Header kolom (baris pertama di sheet)
-const HEADERS = ['Timestamp', 'Nama', 'Jenis', 'Waktu', 'Tanggal', 'Catatan'];
-
-function doPost(e) {
+function doGet(e) {
   try {
-    const ss    = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet   = ss.getSheetByName(SHEET_NAME);
+    const ss  = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(SHEET_NAME);
 
-    // Buat sheet baru jika belum ada
+    // Buat sheet + header jika belum ada
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
+      const hr = sheet.getRange(1, 1, 1, HEADERS.length);
       sheet.appendRow(HEADERS);
-      // Format header
-      const headerRange = sheet.getRange(1, 1, 1, HEADERS.length);
-      headerRange.setFontWeight('bold');
-      headerRange.setBackground('#4F46E5');
-      headerRange.setFontColor('#FFFFFF');
+      hr.setFontWeight('bold');
+      hr.setBackground('#4F46E5');
+      hr.setFontColor('#FFFFFF');
+      sheet.setFrozenRows(1);
     }
 
-    // Parse data dari website
-    const data = JSON.parse(e.postData.contents);
+    // Ambil data dari URL parameter
+    const p = e.parameter;
 
-    // Tulis ke sheet
+    // Validasi minimal
+    if (!p.nama || !p.jenis) {
+      return jsonResponse({ success: false, error: 'Parameter nama/jenis kosong' });
+    }
+
+    // Tulis baris baru
     sheet.appendRow([
-      new Date(),          // Timestamp otomatis
-      data.nama    || '',
-      data.jenis   || '',
-      data.waktu   || '',
-      data.tanggal || '',
-      data.catatan || '',
+      new Date(),          // Timestamp server (lebih akurat)
+      p.nama    || '',
+      p.jenis   || '',
+      p.waktu   || '',
+      p.tanggal || '',
+      p.catatan || '-',
     ]);
 
-    // Auto-resize kolom
     sheet.autoResizeColumns(1, HEADERS.length);
 
-    return ContentService
-      .createTextOutput(JSON.stringify({ success: true, message: 'Absensi tercatat' }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ success: true, pesan: 'Absensi ' + p.nama + ' tercatat!' });
 
   } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ success: false, message: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ success: false, error: err.toString() });
   }
 }
 
-// Test manual dari editor (opsional)
-function testManual() {
-  const fakeEvent = {
-    postData: {
-      contents: JSON.stringify({
-        nama: 'Ahmad Fauzi',
-        jenis: 'masuk',
-        waktu: '08:05:12',
-        tanggal: '21 Jun 2026',
-        catatan: 'Test',
-      })
-    }
-  };
-  const result = doPost(fakeEvent);
+function jsonResponse(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Fungsi test — jalankan manual dari editor untuk cek
+function testCoba() {
+  const e = { parameter: { nama: 'Solihun', jenis: 'masuk', waktu: '08:00:00', tanggal: '21 Jun 2026', catatan: 'Test' } };
+  const result = doGet(e);
   Logger.log(result.getContent());
 }
