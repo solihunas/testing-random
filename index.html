@@ -1,441 +1,828 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Absensi IPI DIGITAL</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Trading Platform</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     :root {
-      --navy:   #0F172A;
-      --navy2:  #1E293B;
-      --indigo: #4F46E5;
-      --ind2:   #6366F1;
-      --green:  #059669;
-      --grn2:   #10B981;
-      --amber:  #D97706;
-      --amb2:   #F59E0B;
-      --g50:    #F8FAFC;
-      --g100:   #F1F5F9;
-      --g200:   #E2E8F0;
-      --g400:   #94A3B8;
-      --g500:   #64748B;
-      --g700:   #334155;
-      --g900:   #0F172A;
+      --blue:   #1565c0;
+      --blue2:  #1976d2;
+      --green:  #26a69a;
+      --red:    #ef5350;
+      --border: #e0e0e0;
+      --scale-bg: #fafafa;
+      --grid:   #f2f2f2;
+      --text:   #212121;
+      --muted:  #9e9e9e;
     }
 
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(145deg, #0F172A 0%, #1E1B4B 50%, #4C1D95 100%);
-      min-height: 100vh;
-      padding-bottom: 60px;
-      color: var(--g900);
+    html, body {
+      height: 100%; height: 100dvh;
+      background: #fff;
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      color: var(--text);
+      overflow: hidden;
+      user-select: none;
     }
 
-    /* ─ Topbar ─ */
-    .topbar {
-      background: rgba(255,255,255,0.05);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      padding: 14px 20px;
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+    }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      height: 48px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-    }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .brand-logo {
-      width: 34px; height: 34px;
-      background: linear-gradient(135deg, var(--indigo), var(--ind2));
-      border-radius: 9px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 17px;
-    }
-    .brand-name { color: #fff; font-size: 15px; font-weight: 800; letter-spacing: .3px; }
-    .topbar-date { font-size: 12px; color: var(--g400); }
-
-    /* ─ Layout ─ */
-    .wrap { max-width: 460px; margin: 0 auto; padding: 24px 16px 0; }
-
-    /* ─ Clock Card ─ */
-    .clock-card {
-      background: linear-gradient(135deg, #4F46E5, #7C3AED);
-      border-radius: 20px;
-      padding: 28px 24px 22px;
-      text-align: center;
-      margin-bottom: 18px;
+      padding: 0 14px;
+      flex-shrink: 0;
       position: relative;
-      overflow: hidden;
-      box-shadow: 0 16px 50px rgba(79,70,229,.45);
-    }
-    .clock-card::before {
-      content:''; position:absolute; top:-50px; right:-50px;
-      width:180px; height:180px; background:rgba(255,255,255,.06); border-radius:50%;
-    }
-    .clock-chip {
-      display:inline-block;
-      background:rgba(255,255,255,.15);
-      color:rgba(255,255,255,.85);
-      font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase;
-      padding:4px 12px; border-radius:99px; margin-bottom:10px;
-    }
-    .clock-time {
-      font-size:54px; font-weight:800; color:#fff;
-      letter-spacing:-2px; line-height:1; margin-bottom:8px;
-      position:relative; z-index:1;
-    }
-    .clock-date { font-size:14px; color:rgba(255,255,255,.75); font-weight:500; }
-
-    /* ─ Card ─ */
-    .card {
-      background:#fff;
-      border-radius:20px;
-      overflow:hidden;
-      box-shadow:0 8px 40px rgba(0,0,0,.25);
-      margin-bottom:14px;
-    }
-    .card-sec {
-      padding:20px 22px;
-      border-bottom:1px solid var(--g100);
-    }
-    .card-sec:last-child { border-bottom:none; }
-    .sec-title {
-      font-size:10px; font-weight:800; letter-spacing:1px;
-      text-transform:uppercase; color:var(--g400); margin-bottom:12px;
+      z-index: 20;
     }
 
-    /* ─ Select & Textarea ─ */
-    select, textarea {
-      width:100%; padding:12px 14px;
-      border:1.5px solid var(--g200); border-radius:12px;
-      font-size:15px; color:var(--g900); background:var(--g50);
-      outline:none; font-family:inherit;
-      transition:border-color .2s, box-shadow .2s;
-    }
-    select:focus, textarea:focus {
-      border-color:var(--indigo);
-      box-shadow:0 0 0 3px rgba(79,70,229,.1);
-      background:#fff;
-    }
-    textarea { resize:vertical; min-height:80px; }
+    .tb-left { display: flex; align-items: center; }
+    .tb-right { display: flex; align-items: center; gap: 18px; margin-left: auto; }
 
-    /* ─ Jenis Toggle ─ */
-    .toggle-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .tog {
-      padding:14px 8px; border-radius:12px;
-      border:2px solid var(--g200); background:var(--g50);
-      cursor:pointer; text-align:center;
-      transition:all .2s; user-select:none;
+    .hamburger {
+      display: flex; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px; width: 32px;
     }
-    .tog .ico { font-size:22px; margin-bottom:4px; }
-    .tog .lbl { font-size:14px; font-weight:700; color:var(--g500); }
-    .tog .sub { font-size:11px; color:var(--g400); margin-top:1px; }
-    .tog.masuk.on  { border-color:var(--grn2); background:#F0FDF4; box-shadow:0 4px 14px rgba(16,185,129,.18); }
-    .tog.masuk.on .lbl { color:var(--green); }
-    .tog.pulang.on { border-color:var(--amb2); background:#FFFBEB; box-shadow:0 4px 14px rgba(245,158,11,.18); }
-    .tog.pulang.on .lbl { color:var(--amber); }
+    .hamburger span { display: block; height: 2px; background: #333; border-radius: 2px; }
 
-    /* ─ Time Info ─ */
-    .time-info {
-      display:flex; align-items:center; gap:10px;
-      padding:12px 14px; background:var(--g50);
-      border:1.5px solid var(--g200); border-radius:12px;
+    .tb-icon {
+      cursor: pointer; color: #555; display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 6px;
+      transition: background .15s;
     }
-    .time-main { font-size:15px; font-weight:700; color:var(--g900); }
-    .time-sub  { font-size:11px; color:var(--g400); }
+    .tb-icon:hover { background: #f5f5f5; }
+    .tb-icon svg { width: 20px; height: 20px; }
 
-    /* ─ Submit Button ─ */
-    .btn {
-      width:100%; padding:15px; border:none; border-radius:13px;
-      font-size:15px; font-weight:800; color:#fff;
-      cursor:pointer; font-family:inherit;
-      display:flex; align-items:center; justify-content:center; gap:8px;
-      transition:opacity .2s, transform .15s;
+    .tf-btn {
+      background: none; border: none; font-size: 13px; font-weight: 700;
+      color: var(--text); cursor: pointer; padding: 5px 7px;
+      border-radius: 6px; font-family: inherit;
+      transition: background .15s;
     }
-    .btn:hover:not(:disabled) { opacity:.91; transform:translateY(-1px); }
-    .btn:active:not(:disabled){ transform:translateY(0); }
-    .btn:disabled { background:var(--g200)!important; color:var(--g400); cursor:not-allowed; box-shadow:none; }
-    .btn.default { background:linear-gradient(135deg,var(--indigo),var(--ind2)); box-shadow:0 6px 22px rgba(79,70,229,.4); }
-    .btn.masuk   { background:linear-gradient(135deg,var(--green),var(--grn2));  box-shadow:0 6px 22px rgba(16,185,129,.4); }
-    .btn.pulang  { background:linear-gradient(135deg,var(--amber),var(--amb2));  box-shadow:0 6px 22px rgba(245,158,11,.4); }
+    .tf-btn:hover { background: #f5f5f5; }
 
-    .spin {
-      width:18px; height:18px;
-      border:3px solid rgba(255,255,255,.3); border-top-color:#fff;
-      border-radius:50%; animation:sp .7s linear infinite; display:none;
+    /* ── Chart Wrap ── */
+    .chart-wrap {
+      flex: 1; position: relative; overflow: hidden; background: #fff;
     }
-    @keyframes sp { to { transform:rotate(360deg); } }
 
-    .foot-note { text-align:center; font-size:12px; color:var(--g400); margin-top:8px; }
+    /* Symbol overlay */
+    .sym-overlay {
+      position: absolute; top: 10px; left: 10px;
+      z-index: 10; pointer-events: none;
+      line-height: 1.3;
+    }
+    .sym-pair {
+      font-size: 14px; font-weight: 700; color: var(--blue);
+      display: flex; align-items: center; gap: 3px;
+    }
+    .sym-pair svg { flex-shrink: 0; }
+    .sym-name { font-size: 11px; color: var(--muted); margin-top: 1px; }
 
-    /* ─ Success Overlay ─ */
-    .overlay {
-      display:none; position:fixed; inset:0;
-      background:var(--navy);
-      flex-direction:column; align-items:center; justify-content:center;
-      padding:32px 24px; z-index:99;
-      animation:fi .3s ease;
+    /* OHLC bar overlay */
+    .ohlc-bar {
+      position: absolute; top: 10px; right: 90px;
+      z-index: 10; pointer-events: none;
+      font-size: 11px; color: var(--muted);
+      display: none;
     }
-    .overlay.show { display:flex; }
-    @keyframes fi { from { opacity:0; } to { opacity:1; } }
+    .ohlc-bar span { margin-left: 8px; }
+    .ohlc-bar .ov { color: var(--text); font-weight: 600; }
 
-    .suc-icon {
-      width:92px; height:92px; border-radius:50%;
-      display:flex; align-items:center; justify-content:center; font-size:42px;
-      margin-bottom:22px;
-      animation:po .5s cubic-bezier(.175,.885,.32,1.275) .1s both;
-      box-shadow:0 12px 40px rgba(0,0,0,.4);
+    /* Canvas */
+    canvas#chart {
+      display: block;
+      position: absolute;
+      top: 0; left: 0;
+      cursor: crosshair;
     }
-    .suc-icon.masuk  { background:linear-gradient(135deg,var(--green),var(--grn2)); }
-    .suc-icon.pulang { background:linear-gradient(135deg,var(--amber),var(--amb2)); }
-    @keyframes po { from { transform:scale(0);opacity:0; } to { transform:scale(1);opacity:1; } }
 
-    .suc-title { font-size:26px; font-weight:800; color:#fff; margin-bottom:8px; text-align:center; }
-    .suc-sub   { font-size:13px; color:var(--g400); margin-bottom:28px; text-align:center; line-height:1.6; }
+    /* CSV drop zone (shown when no data) */
+    .drop-zone {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px; z-index: 15; background: #fff;
+      transition: background .15s;
+    }
+    .drop-zone.dragover { background: #e3f2fd; }
+    .drop-zone.hidden { display: none; }
 
-    .suc-card {
-      background:var(--navy2); border:1px solid rgba(255,255,255,.08);
-      border-radius:16px; padding:18px; width:100%; max-width:360px; margin-bottom:24px;
+    .dz-box {
+      border: 2px dashed #bdbdbd; border-radius: 16px;
+      padding: 32px 40px; text-align: center;
+      cursor: pointer; transition: border-color .2s;
     }
-    .suc-row {
-      display:flex; justify-content:space-between; align-items:center;
-      padding:8px 0; border-bottom:1px solid rgba(255,255,255,.06);
-      font-size:14px;
-    }
-    .suc-row:last-child { border-bottom:none; }
-    .suc-k { color:var(--g400); font-weight:500; }
-    .suc-v { color:#fff; font-weight:700; }
-    .badge {
-      padding:3px 10px; border-radius:99px;
-      font-size:12px; font-weight:700;
-    }
-    .badge.masuk  { background:rgba(16,185,129,.15); color:var(--grn2); }
-    .badge.pulang { background:rgba(245,158,11,.15);  color:var(--amb2); }
+    .dz-box:hover { border-color: var(--blue); }
+    .dz-icon { font-size: 40px; display: block; margin-bottom: 10px; }
+    .dz-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .dz-sub { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .dz-formats { font-size: 11px; color: var(--blue); margin-top: 8px; }
 
-    .btn-back {
-      padding:13px 36px;
-      background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.12);
-      border-radius:13px; color:#fff; font-size:14px; font-weight:700;
-      cursor:pointer; font-family:inherit; transition:background .2s;
+    /* ── Bottom Nav ── */
+    .bottom-nav {
+      height: 62px; background: #fff;
+      border-top: 1px solid var(--border);
+      display: flex; flex-shrink: 0;
     }
-    .btn-back:hover { background:rgba(255,255,255,.14); }
+    .nav-tab {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 3px;
+      cursor: pointer; color: var(--muted);
+      font-size: 11px; font-weight: 500;
+      transition: color .15s;
+    }
+    .nav-tab.active { color: var(--blue); }
+    .nav-tab svg { width: 22px; height: 22px; }
+
+    /* ── Sidebar drawer ── */
+    .sidebar {
+      position: fixed; top: 0; left: -260px;
+      width: 260px; height: 100%; background: #fff;
+      border-right: 1px solid var(--border);
+      z-index: 100; transition: left .25s cubic-bezier(.4,0,.2,1);
+      padding: 0;
+    }
+    .sidebar.open { left: 0; }
+    .sidebar-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,.35);
+      z-index: 99; display: none;
+    }
+    .sidebar-backdrop.show { display: block; }
+    .sidebar-header {
+      height: 56px; display: flex; align-items: center;
+      padding: 0 16px; border-bottom: 1px solid var(--border);
+      font-size: 15px; font-weight: 700;
+    }
+    .sidebar-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; font-size: 14px; cursor: pointer;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .sidebar-item:hover { background: #f9f9f9; }
+    .sidebar-item svg { width: 20px; height: 20px; color: var(--blue); }
+
+    /* ── TF Picker ── */
+    .tf-picker {
+      position: absolute; top: 50px; right: 12px;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px; z-index: 50;
+      box-shadow: 0 4px 20px rgba(0,0,0,.12);
+      display: none; overflow: hidden; min-width: 160px;
+    }
+    .tf-picker.open { display: block; }
+    .tf-picker-item {
+      padding: 11px 18px; font-size: 13px; cursor: pointer;
+      font-weight: 600; border-bottom: 1px solid #f5f5f5;
+    }
+    .tf-picker-item:hover { background: #f5f9ff; color: var(--blue); }
+    .tf-picker-item.active { color: var(--blue); }
+    .tf-picker-item:last-child { border-bottom: none; }
   </style>
 </head>
 <body>
+<div class="app">
 
-<!-- Topbar -->
-<div class="topbar">
-  <div class="brand">
-    <div class="brand-logo">🏢</div>
-    <span class="brand-name">IPI DIGITAL</span>
-  </div>
-  <div class="topbar-date" id="tpDate"></div>
-</div>
-
-<div class="wrap">
-
-  <!-- Jam -->
-  <div class="clock-card">
-    <div class="clock-chip">⏰ Waktu Sekarang</div>
-    <div class="clock-time" id="clkTime">--:--:--</div>
-    <div class="clock-date" id="clkDate">-</div>
-  </div>
-
-  <!-- Form Card -->
-  <div class="card">
-
-    <!-- Nama -->
-    <div class="card-sec">
-      <div class="sec-title">Nama Karyawan</div>
-      <select id="selNama">
-        <option value="">— Pilih nama Anda —</option>
-        <option>Uung</option>
-        <option>Solihun</option>
-        <option>Adi</option>
-        <option>Saputra</option>
-        <option>Solihun Adi</option>
-        <option>Adi Saputra</option>
-        <option>Solihun Saputra</option>
-        <option>Amung</option>
-        <option>Kembar</option>
-      </select>
-    </div>
-
-    <!-- Jenis -->
-    <div class="card-sec">
-      <div class="sec-title">Jenis Absen</div>
-      <div class="toggle-row">
-        <div class="tog masuk" id="tMasuk" onclick="pilih('masuk')">
-          <div class="ico">🟢</div>
-          <div class="lbl">Masuk</div>
-          <div class="sub">Mulai kerja</div>
-        </div>
-        <div class="tog pulang" id="tPulang" onclick="pilih('pulang')">
-          <div class="ico">🟠</div>
-          <div class="lbl">Pulang</div>
-          <div class="sub">Selesai kerja</div>
-        </div>
+  <!-- ── Toolbar ── -->
+  <div class="toolbar">
+    <div class="tb-left">
+      <div class="hamburger" onclick="toggleSidebar()">
+        <span></span><span></span><span></span>
       </div>
     </div>
-
-    <!-- Waktu -->
-    <div class="card-sec">
-      <div class="sec-title">Waktu Tercatat Otomatis</div>
-      <div class="time-info">
-        <span style="font-size:20px">🕐</span>
-        <div>
-          <div class="time-main" id="infoWkt">--:--:--</div>
-          <div class="time-sub"  id="infoTgl">-</div>
-        </div>
+    <div class="tb-right">
+      <!-- Add indicator -->
+      <div class="tb-icon" title="Add Indicator" onclick="openIndicators()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </div>
+      <!-- Chart type -->
+      <div class="tb-icon" id="chartTypeBtn" title="Chart Type" onclick="cycleChartType()">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <rect x="3" y="8" width="3.5" height="8" rx=".4"/>
+          <line x1="4.75" y1="5" x2="4.75" y2="8" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="4.75" y1="16" x2="4.75" y2="19" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="10" y="11" width="3.5" height="6" rx=".4"/>
+          <line x1="11.75" y1="8" x2="11.75" y2="11" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="11.75" y1="17" x2="11.75" y2="20" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="17" y="7" width="3.5" height="9" rx=".4"/>
+          <line x1="18.75" y1="4" x2="18.75" y2="7" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="18.75" y1="16" x2="18.75" y2="19" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <!-- Timeframe -->
+      <button class="tf-btn" id="tfBtn" onclick="toggleTF()">M15</button>
+      <!-- Sessions -->
+      <div class="tb-icon" title="Market Sessions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="9"/>
+          <polyline points="12 7 12 12 15 15"/>
+          <polyline points="3 12 5.5 12"/>
+        </svg>
+      </div>
+      <!-- Fullscreen -->
+      <div class="tb-icon" title="Fullscreen" onclick="toggleFull()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+        </svg>
       </div>
     </div>
-
-    <!-- Catatan -->
-    <div class="card-sec">
-      <div class="sec-title">Catatan <span style="font-weight:400;text-transform:none;font-size:10px;color:#94A3B8">(opsional)</span></div>
-      <textarea id="txtCat" placeholder="Izin terlambat, lembur, WFH, dll..."></textarea>
-    </div>
-
-    <!-- Submit -->
-    <div class="card-sec">
-      <button class="btn default" id="btnSub" onclick="submit()" disabled>
-        <div class="spin" id="spin"></div>
-        <span id="btnLbl">Pilih nama &amp; jenis absen dulu</span>
-      </button>
-      <p class="foot-note">Data langsung tersimpan ke Google Sheets 📋</p>
-    </div>
-
-  </div><!-- /card -->
-</div>
-
-<!-- ══ SUKSES OVERLAY ══ -->
-<div class="overlay" id="ovSukses">
-  <div class="suc-icon" id="sucIco">✓</div>
-  <div class="suc-title" id="sucTitle">Absen Berhasil!</div>
-  <div class="suc-sub"   id="sucSub">Data Anda telah tersimpan.</div>
-
-  <div class="suc-card">
-    <div class="suc-row"><span class="suc-k">Nama</span>   <span class="suc-v" id="rNama">-</span></div>
-    <div class="suc-row"><span class="suc-k">Jenis</span>  <span id="rJenis"></span></div>
-    <div class="suc-row"><span class="suc-k">Waktu</span>  <span class="suc-v" id="rWaktu">-</span></div>
-    <div class="suc-row"><span class="suc-k">Tanggal</span><span class="suc-v" id="rTgl">-</span></div>
-    <div class="suc-row"><span class="suc-k">Catatan</span><span class="suc-v" id="rCat">-</span></div>
   </div>
 
-  <button class="btn-back" onclick="kembali()">← Absen Lagi</button>
+  <!-- TF Picker dropdown -->
+  <div class="tf-picker" id="tfPicker">
+    <div class="tf-picker-item" onclick="setTF('M1')">M1</div>
+    <div class="tf-picker-item" onclick="setTF('M5')">M5</div>
+    <div class="tf-picker-item active" onclick="setTF('M15')">M15</div>
+    <div class="tf-picker-item" onclick="setTF('M30')">M30</div>
+    <div class="tf-picker-item" onclick="setTF('H1')">H1</div>
+    <div class="tf-picker-item" onclick="setTF('H4')">H4</div>
+    <div class="tf-picker-item" onclick="setTF('D1')">D1</div>
+    <div class="tf-picker-item" onclick="setTF('W1')">W1</div>
+    <div class="tf-picker-item" onclick="setTF('MN')">MN</div>
+  </div>
+
+  <!-- ── Chart Area ── -->
+  <div class="chart-wrap" id="chartWrap">
+
+    <!-- Symbol overlay -->
+    <div class="sym-overlay">
+      <div class="sym-pair" id="symPair">
+        BTCUSDc
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="#1565c0"><path d="M7 10l5 5 5-5z"/></svg>
+        <span id="symTF">M15</span>
+      </div>
+      <div class="sym-name" id="symName">Bitcoin vs US Dollar</div>
+    </div>
+
+    <!-- OHLC bar -->
+    <div class="ohlc-bar" id="ohlcBar">
+      O<span id="oO" class="ov">-</span>
+      H<span id="oH" class="ov">-</span>
+      L<span id="oL" class="ov">-</span>
+      C<span id="oC" class="ov">-</span>
+    </div>
+
+    <!-- CSV drop zone -->
+    <div class="drop-zone" id="dropZone">
+      <label class="dz-box" for="csvFile">
+        <span class="dz-icon">📂</span>
+        <div class="dz-title">Muat Data CSV</div>
+        <div class="dz-sub">Klik atau drag & drop file CSV<br>ke sini untuk menampilkan chart</div>
+        <div class="dz-formats">Format: Date, Open, High, Low, Close, Volume</div>
+      </label>
+    </div>
+    <input type="file" id="csvFile" accept=".csv,.txt" style="display:none" onchange="onFileSelect(event)">
+
+    <!-- Chart canvas -->
+    <canvas id="chart"></canvas>
+  </div>
+
+  <!-- ── Bottom Nav ── -->
+  <div class="bottom-nav">
+    <div class="nav-tab" onclick="setTab(0)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="8" y1="6" x2="21" y2="6"/>
+        <line x1="8" y1="12" x2="21" y2="12"/>
+        <line x1="8" y1="18" x2="21" y2="18"/>
+        <line x1="3" y1="6" x2="3.01" y2="6"/>
+        <line x1="3" y1="12" x2="3.01" y2="12"/>
+        <line x1="3" y1="18" x2="3.01" y2="18"/>
+      </svg>
+      Quote
+    </div>
+    <div class="nav-tab active" id="tabChart" onclick="setTab(1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <rect x="3" y="8" width="3.5" height="8" rx=".4"/>
+        <line x1="4.75" y1="5" x2="4.75" y2="8"/><line x1="4.75" y1="16" x2="4.75" y2="19"/>
+        <rect x="10" y="11" width="3.5" height="6" rx=".4"/>
+        <line x1="11.75" y1="8" x2="11.75" y2="11"/><line x1="11.75" y1="17" x2="11.75" y2="20"/>
+        <rect x="17" y="7" width="3.5" height="9" rx=".4"/>
+        <line x1="18.75" y1="4" x2="18.75" y2="7"/><line x1="18.75" y1="16" x2="18.75" y2="19"/>
+      </svg>
+      Chart
+    </div>
+    <div class="nav-tab" onclick="setTab(2)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="3 17 8 12 13 15 21 7"/>
+        <polyline points="15 7 21 7 21 13"/>
+      </svg>
+      Trade
+    </div>
+    <div class="nav-tab" onclick="setTab(3)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="9"/>
+        <polyline points="12 7 12 12 15 15"/>
+        <polyline points="3 12 5.5 12"/>
+      </svg>
+      Riwayat
+    </div>
+    <div class="nav-tab" onclick="setTab(4)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      Pesan
+    </div>
+  </div>
 </div>
 
-<!-- Hidden iframe target untuk form submit (hindari reload halaman) -->
-<iframe name="frm_target" style="display:none"></iframe>
+<!-- ── Sidebar ── -->
+<div class="sidebar-backdrop" id="backdrop" onclick="toggleSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">Trading Platform</div>
+  <div class="sidebar-item" onclick="document.getElementById('csvFile').click(); toggleSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+    </svg>
+    Muat CSV
+  </div>
+  <div class="sidebar-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.07 4.93A10 10 0 1 0 21 12"/>
+    </svg>
+    Simbol
+  </div>
+  <div class="sidebar-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+    </svg>
+    Indikator
+  </div>
+  <div class="sidebar-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+    </svg>
+    Pengaturan
+  </div>
+</div>
 
 <script>
-  /* ══ CONFIG ══ */
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFzwtECHFLITlKIufspKIOHL2Ve3jqyi0udbTvNTF4VE6OzrwrUldfF1BAwuw34uIt/exec';
+/* ════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════ */
+const SCALE_W  = 76;   // price scale width (px)
+const TIME_H   = 26;   // time axis height (px)
+const CHART_TYPES = ['candle', 'bar', 'line'];
 
-  /* ══ CLOCK ══ */
-  const HARI  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-  const BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-  const pad   = n => String(n).padStart(2,'0');
+let candles    = [];
+let viewOff    = 0;    // # candles hidden on the right
+let candleW    = 9;
+let gap        = 2;
+let chartType  = 'candle';
+let crossX     = -1;
+let crossY     = -1;
+let tf         = 'M15';
+let symbol     = 'BTCUSDc';
+let symDesc    = 'Bitcoin vs US Dollar';
 
-  function fmtWaktu(d){ return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
-  function fmtTgl(d)  { return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`; }
-  function fmtTglS(d) { return `${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`; }
+// drag
+let dragging   = false;
+let dragX0     = 0;
+let dragOff0   = 0;
 
-  function tick() {
-    const n = new Date();
-    const w = fmtWaktu(n), t = fmtTgl(n);
-    document.getElementById('clkTime').textContent  = w;
-    document.getElementById('clkDate').textContent  = t;
-    document.getElementById('infoWkt').textContent  = w;
-    document.getElementById('infoTgl').textContent  = t;
-    document.getElementById('tpDate').textContent   = t;
-  }
-  setInterval(tick, 1000); tick();
+// pinch
+let pinch0Dist = 0;
+let pinch0CW   = 9;
 
-  /* ══ JENIS ══ */
-  let jenis = null;
-  function pilih(j) {
-    jenis = j;
-    document.getElementById('tMasuk').classList.toggle('on',  j==='masuk');
-    document.getElementById('tPulang').classList.toggle('on', j==='pulang');
-    cekBtn();
-  }
+const canvas   = document.getElementById('chart');
+const ctx      = canvas.getContext('2d');
+const wrap     = document.getElementById('chartWrap');
 
-  document.getElementById('selNama').addEventListener('change', cekBtn);
+/* ════════════════════════════════════════════
+   RESIZE
+════════════════════════════════════════════ */
+function resize() {
+  canvas.width  = wrap.clientWidth;
+  canvas.height = wrap.clientHeight;
+  render();
+}
+window.addEventListener('resize', resize);
 
-  function cekBtn() {
-    const nama = document.getElementById('selNama').value;
-    const btn  = document.getElementById('btnSub');
-    const lbl  = document.getElementById('btnLbl');
-    if (!nama && !jenis)   { lbl.textContent='Pilih nama & jenis absen dulu'; btn.className='btn default'; btn.disabled=true; return; }
-    if (!nama)             { lbl.textContent='Pilih nama karyawan dulu';       btn.className='btn default'; btn.disabled=true; return; }
-    if (!jenis)            { lbl.textContent='Pilih Masuk atau Pulang';         btn.className='btn default'; btn.disabled=true; return; }
-    const ico = jenis==='masuk' ? '🟢' : '🟠';
-    const kat = jenis==='masuk' ? 'Masuk' : 'Pulang';
-    lbl.textContent = `${ico}  Catat Absen ${kat}`;
-    btn.className   = `btn ${jenis}`;
-    btn.disabled    = false;
-  }
+/* ════════════════════════════════════════════
+   CSV PARSING
+════════════════════════════════════════════ */
+function onFileSelect(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  // update symbol from filename
+  const base = f.name.replace(/\.[^.]+$/, '').toUpperCase();
+  if (base) { symbol = base; document.getElementById('symPair').childNodes[0].textContent = base + ' '; }
+  readFile(f);
+}
 
-  /* ══ SUBMIT via hidden form → iframe (100% tanpa CORS) ══ */
-  function submit() {
-    const now     = new Date();
-    const nama    = document.getElementById('selNama').value;
-    const waktu   = fmtWaktu(now);
-    const tanggal = fmtTglS(now);
-    const catatan = document.getElementById('txtCat').value.trim() || '-';
+function readFile(f) {
+  const r = new FileReader();
+  r.onload = ev => {
+    const data = parseCSV(ev.target.result);
+    if (!data.length) { alert('Data CSV tidak terbaca. Cek format file.'); return; }
+    candles = data;
+    document.getElementById('dropZone').classList.add('hidden');
+    viewOff = 0;
+    autoFit();
+    render();
+  };
+  r.readAsText(f);
+}
 
-    // Loading
-    document.getElementById('btnSub').disabled = true;
-    document.getElementById('spin').style.display = 'block';
-    document.getElementById('btnLbl').textContent = 'Menyimpan...';
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  const result = [];
 
-    // Kirim via GET params (simple request, no CORS preflight, tidak ada body yang hilang di redirect)
-    const params = new URLSearchParams({ nama, jenis, waktu, tanggal, catatan });
-    fetch(SCRIPT_URL + '?' + params.toString(), { method: 'GET', mode: 'no-cors' })
-      .catch(() => {});
+  // detect separator: tab or comma
+  const sep = (lines[0].split('\t').length > lines[0].split(',').length) ? '\t' : ',';
 
-    // Tampilkan sukses setelah 2 detik
-    setTimeout(() => tampilSukses({ nama, jenis, waktu, tanggal, catatan }), 2000);
-  }
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i].trim();
+    if (!raw) continue;
+    const cols = raw.split(sep).map(s => s.trim().replace(/["']/g, ''));
+    if (cols.length < 5) continue;
 
-  function tampilSukses(d) {
-    document.getElementById('rNama').textContent  = d.nama;
-    document.getElementById('rWaktu').textContent = d.waktu;
-    document.getElementById('rTgl').textContent   = d.tanggal;
-    document.getElementById('rCat').textContent   = d.catatan;
-    document.getElementById('rJenis').innerHTML   =
-      `<span class="badge ${d.jenis}">${d.jenis==='masuk'?'🟢 Masuk':'🟠 Pulang'}</span>`;
+    let t, o, h, l, c, v = 0;
 
-    const ico   = document.getElementById('sucIco');
-    const title = document.getElementById('sucTitle');
-    const sub   = document.getElementById('sucSub');
-
-    if (d.jenis==='masuk') {
-      ico.className='suc-icon masuk'; ico.textContent='✓';
-      title.textContent='Selamat Datang! 👋';
-      sub.textContent=`Absen masuk ${d.nama} pukul ${d.waktu} tercatat.`;
-    } else {
-      ico.className='suc-icon pulang'; ico.textContent='🏠';
-      title.textContent='Sampai Jumpa! 👋';
-      sub.textContent=`Absen pulang ${d.nama} pukul ${d.waktu} tercatat.`;
+    // Format A: DATE TIME O H L C [VOL ...] (MT5 export)
+    if (cols.length >= 6 && /^\d{2}[:\/\-]\d{2}/.test(cols[1])) {
+      const dateStr = cols[0].replace(/\./g, '-');
+      t = new Date(`${dateStr}T${cols[1]}`);
+      o = +cols[2]; h = +cols[3]; l = +cols[4]; c = +cols[5];
+      v = +cols[6] || 0;
+    }
+    // Format B: DATETIME O H L C [VOL] — datetime in one column
+    else {
+      t = new Date(cols[0].replace(/\./g, '-'));
+      o = +cols[1]; h = +cols[2]; l = +cols[3]; c = +cols[4];
+      v = +cols[5] || 0;
     }
 
-    document.getElementById('ovSukses').classList.add('show');
-    document.getElementById('spin').style.display='none';
+    if (!t || isNaN(t.getTime()) || isNaN(o) || isNaN(h)) continue;
+    if (o <= 0 || h <= 0) continue;
+
+    result.push({ t, o, h, l, c, v });
   }
 
-  function kembali() {
-    document.getElementById('ovSukses').classList.remove('show');
-    document.getElementById('selNama').value = '';
-    document.getElementById('txtCat').value  = '';
-    jenis = null;
-    document.getElementById('tMasuk').classList.remove('on');
-    document.getElementById('tPulang').classList.remove('on');
-    document.getElementById('btnSub').disabled = true;
-    document.getElementById('btnLbl').textContent = 'Pilih nama & jenis absen dulu';
-    document.getElementById('btnSub').className = 'btn default';
+  return result.sort((a, b) => a.t - b.t);
+}
+
+/* ════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════ */
+function autoFit() {
+  const W = canvas.width - SCALE_W;
+  const n = Math.min(100, candles.length);
+  const step = Math.max(3, Math.floor(W / n));
+  candleW = Math.max(2, step - 2);
+  gap = step - candleW;
+}
+
+function getStep() { return candleW + gap; }
+
+function visibleRange() {
+  const W = canvas.width - SCALE_W;
+  const step = getStep();
+  const count = Math.ceil(W / step) + 1;
+  const end   = Math.max(1, candles.length - viewOff);
+  const start = Math.max(0, end - count);
+  return { start, end };
+}
+
+function priceRange(start, end) {
+  let mn = Infinity, mx = -Infinity;
+  for (let i = start; i < end; i++) {
+    if (candles[i].l < mn) mn = candles[i].l;
+    if (candles[i].h > mx) mx = candles[i].h;
   }
+  if (mn === Infinity) return { min: 0, max: 1 };
+  const pad = (mx - mn) * 0.08 || mn * 0.001;
+  return { min: mn - pad, max: mx + pad };
+}
+
+function toY(price, mn, mx, H) {
+  return Math.round(((mx - price) / (mx - mn)) * H);
+}
+
+function digits(price) {
+  if (price > 1000) return 2;
+  if (price > 10)   return 3;
+  if (price > 1)    return 4;
+  return 5;
+}
+
+function fmtP(p) { return p.toFixed(digits(p)); }
+
+function fmtTime(d) {
+  const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dd = String(d.getDate()).padStart(2, '0');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  return `${dd} ${mo[d.getMonth()]} ${hh}:${mm}`;
+}
+
+/* ════════════════════════════════════════════
+   RENDER
+════════════════════════════════════════════ */
+function render() {
+  const W = canvas.width, H = canvas.height;
+  const chartW = W - SCALE_W;
+  const chartH = H - TIME_H;
+  ctx.clearRect(0, 0, W, H);
+
+  // background
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, W, H);
+
+  if (!candles.length) return;
+
+  const { start, end } = visibleRange();
+  const vis  = candles.slice(start, end);
+  const step = getStep();
+  const { min: mn, max: mx } = priceRange(start, end);
+  const dg   = digits(vis[vis.length - 1]?.c || 1);
+
+  /* ── Price grid ── */
+  const gridN = Math.max(4, Math.floor(chartH / 60));
+  ctx.strokeStyle = '#f0f0f0';
+  ctx.lineWidth   = 1;
+  ctx.font        = '10px Roboto, sans-serif';
+  ctx.fillStyle   = '#9e9e9e';
+  ctx.textAlign   = 'left';
+  ctx.textBaseline = 'middle';
+
+  for (let i = 0; i <= gridN; i++) {
+    const price = mn + (mx - mn) * (i / gridN);
+    const y = toY(price, mn, mx, chartH);
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(chartW, y); ctx.stroke();
+    ctx.fillText(price.toFixed(dg), chartW + 5, y);
+  }
+
+  /* ── Time grid ── */
+  const timeEvery = Math.max(1, Math.floor(vis.length / 5));
+  ctx.fillStyle   = '#9e9e9e';
+  ctx.textAlign   = 'center';
+  ctx.textBaseline = 'middle';
+
+  for (let i = 0; i < vis.length; i += timeEvery) {
+    const x = (i + 0.5) * step;
+    ctx.beginPath(); ctx.strokeStyle = '#f0f0f0';
+    ctx.moveTo(x, 0); ctx.lineTo(x, chartH); ctx.stroke();
+    ctx.fillText(fmtTime(vis[i].t), x, chartH + TIME_H / 2);
+  }
+
+  /* ── Scale area ── */
+  ctx.fillStyle = '#fafafa';
+  ctx.fillRect(chartW, 0, SCALE_W, H);
+  ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(chartW, 0); ctx.lineTo(chartW, H); ctx.stroke();
+
+  /* ── Time axis border ── */
+  ctx.beginPath(); ctx.moveTo(0, chartH); ctx.lineTo(chartW, chartH); ctx.stroke();
+
+  /* ── Candles / Bars / Line ── */
+  if (chartType === 'line') {
+    ctx.beginPath();
+    ctx.strokeStyle = '#1565c0';
+    ctx.lineWidth   = 1.5;
+    for (let i = 0; i < vis.length; i++) {
+      const x = i * step + candleW / 2;
+      const y = toY(vis[i].c, mn, mx, chartH);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  } else {
+    for (let i = 0; i < vis.length; i++) {
+      const cd   = vis[i];
+      const bull = cd.c >= cd.o;
+      const col  = bull ? '#26a69a' : '#ef5350';
+      const x    = i * step;
+      const cx   = x + candleW / 2;
+
+      const wTop = toY(cd.h, mn, mx, chartH);
+      const wBot = toY(cd.l, mn, mx, chartH);
+      const bTop = toY(Math.max(cd.o, cd.c), mn, mx, chartH);
+      const bBot = toY(Math.min(cd.o, cd.c), mn, mx, chartH);
+      const bH   = Math.max(1, bBot - bTop);
+
+      // wick
+      ctx.strokeStyle = col; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx, wTop); ctx.lineTo(cx, wBot); ctx.stroke();
+
+      if (chartType === 'candle') {
+        ctx.fillStyle = col;
+        ctx.fillRect(x, bTop, candleW, bH);
+      } else {
+        // OHLC bar
+        ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(cx, wTop); ctx.lineTo(cx, wBot);  // vertical
+        ctx.moveTo(x, bTop); ctx.lineTo(cx, bTop);   // open tick left
+        ctx.moveTo(cx, bBot); ctx.lineTo(x + candleW, bBot); // close tick right
+        ctx.stroke();
+      }
+    }
+  }
+
+  /* ── Last price line ── */
+  const last = candles[end - 1];
+  if (last) {
+    const y     = toY(last.c, mn, mx, chartH);
+    const bull  = last.c >= last.o;
+    const lCol  = bull ? '#26a69a' : '#ef5350';
+
+    ctx.save();
+    ctx.setLineDash([4, 3]);
+    ctx.strokeStyle = lCol; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(chartW, y); ctx.stroke();
+    ctx.restore();
+
+    // price label
+    const lbl = last.c.toFixed(dg);
+    const lw  = ctx.measureText(lbl).width + 14;
+    ctx.fillStyle = lCol;
+    ctx.beginPath();
+    ctx.roundRect(chartW + 2, y - 10, SCALE_W - 2, 20, 3);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = '11px Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(lbl, chartW + SCALE_W / 2, y);
+  }
+
+  /* ── Crosshair ── */
+  if (crossX >= 0 && crossX < chartW) {
+    ctx.save();
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(crossX, 0); ctx.lineTo(crossX, chartH);
+    ctx.moveTo(0, crossY); ctx.lineTo(chartW, crossY);
+    ctx.stroke();
+    ctx.restore();
+
+    // crosshair price label
+    if (crossY > 0 && crossY < chartH) {
+      const price = mx - (crossY / chartH) * (mx - mn);
+      const lbl   = price.toFixed(dg);
+      ctx.fillStyle = 'rgba(0,0,0,.7)';
+      ctx.beginPath(); ctx.roundRect(chartW + 2, crossY - 10, SCALE_W - 2, 20, 3); ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = '11px Roboto, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(lbl, chartW + SCALE_W / 2, crossY);
+    }
+
+    // find hovered candle
+    const step2 = getStep();
+    const idx2  = Math.floor(crossX / step2);
+    if (idx2 >= 0 && idx2 < vis.length) {
+      const cd = vis[idx2];
+      const bar = document.getElementById('ohlcBar');
+      bar.style.display = 'block';
+      document.getElementById('oO').textContent = ' ' + cd.o.toFixed(dg);
+      document.getElementById('oH').textContent = ' ' + cd.h.toFixed(dg);
+      document.getElementById('oL').textContent = ' ' + cd.l.toFixed(dg);
+      document.getElementById('oC').textContent = ' ' + cd.c.toFixed(dg);
+    }
+  } else {
+    document.getElementById('ohlcBar').style.display = 'none';
+  }
+}
+
+/* ════════════════════════════════════════════
+   EVENTS — Mouse
+════════════════════════════════════════════ */
+canvas.addEventListener('mousedown', e => {
+  dragging = true; dragX0 = e.clientX; dragOff0 = viewOff;
+});
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  crossX = e.clientX - rect.left;
+  crossY = e.clientY - rect.top;
+  if (dragging) {
+    const dx  = e.clientX - dragX0;
+    const max = candles.length - 1;
+    viewOff = Math.max(0, Math.min(max, dragOff0 - Math.round(dx / getStep())));
+  }
+  render();
+});
+canvas.addEventListener('mouseup',    () => { dragging = false; });
+canvas.addEventListener('mouseleave', () => { dragging = false; crossX = -1; render(); });
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const f = e.deltaY < 0 ? 1.2 : 0.83;
+  candleW = Math.max(2, Math.min(40, Math.round(candleW * f)));
+  gap = Math.max(1, Math.floor(candleW * 0.22));
+  render();
+}, { passive: false });
+
+/* ════════════════════════════════════════════
+   EVENTS — Touch
+════════════════════════════════════════════ */
+let touch0X = 0, touch0Off = 0;
+canvas.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) {
+    touch0X = e.touches[0].clientX; touch0Off = viewOff;
+  } else if (e.touches.length === 2) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    pinch0Dist = Math.sqrt(dx * dx + dy * dy);
+    pinch0CW   = candleW;
+  }
+}, { passive: true });
+
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (e.touches.length === 1) {
+    const dx  = e.touches[0].clientX - touch0X;
+    const max = candles.length - 1;
+    viewOff = Math.max(0, Math.min(max, touch0Off - Math.round(dx / getStep())));
+  } else if (e.touches.length === 2) {
+    const dx   = e.touches[0].clientX - e.touches[1].clientX;
+    const dy   = e.touches[0].clientY - e.touches[1].clientY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    candleW = Math.max(2, Math.min(40, Math.round(pinch0CW * dist / pinch0Dist)));
+    gap = Math.max(1, Math.floor(candleW * 0.22));
+  }
+  render();
+}, { passive: false });
+
+/* ════════════════════════════════════════════
+   DRAG & DROP CSV
+════════════════════════════════════════════ */
+const dz = document.getElementById('dropZone');
+dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('dragover'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('dragover');
+  const f = e.dataTransfer.files[0];
+  if (f) readFile(f);
+});
+
+/* ════════════════════════════════════════════
+   UI ACTIONS
+════════════════════════════════════════════ */
+function setTab(idx) {
+  document.querySelectorAll('.nav-tab').forEach((t, i) => {
+    t.classList.toggle('active', i === idx);
+  });
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('backdrop').classList.toggle('show');
+}
+
+function toggleTF() {
+  document.getElementById('tfPicker').classList.toggle('open');
+}
+
+function setTF(val) {
+  tf = val;
+  document.getElementById('tfBtn').textContent = val;
+  document.getElementById('symTF').textContent = val;
+  document.querySelectorAll('.tf-picker-item').forEach(el => {
+    el.classList.toggle('active', el.textContent === val);
+  });
+  document.getElementById('tfPicker').classList.remove('open');
+}
+
+function cycleChartType() {
+  const idx = CHART_TYPES.indexOf(chartType);
+  chartType = CHART_TYPES[(idx + 1) % CHART_TYPES.length];
+  render();
+}
+
+function openIndicators() { /* placeholder */ }
+
+function toggleFull() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
+}
+
+// close TF picker on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('#tfPicker') && !e.target.closest('#tfBtn')) {
+    document.getElementById('tfPicker').classList.remove('open');
+  }
+});
+
+/* ════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════ */
+resize();
 </script>
-
 </body>
 </html>
